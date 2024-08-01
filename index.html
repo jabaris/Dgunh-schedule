@@ -122,6 +122,7 @@ let formatDate = (date) => {
     return date.toLocaleDateString('ru-RU', options);
 }
 
+
 let toggleFormFields = () => {
     var userType = document.getElementById("userType").value;
     document.getElementById("studentFields").style.display = userType === "student" ? "block" : "none";
@@ -155,7 +156,6 @@ let submitForm = () => {
         type: 'POST',
         dataType: "json",
         data: data,
-        cache: false,
         success: function(response) {
             const schedule = response;
             displaySchedule(schedule, selectedDay);
