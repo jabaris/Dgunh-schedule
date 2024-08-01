@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .schedule-day {
+            margin-bottom: 20px;
+        }
+        .schedule-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 id="heading">Выберите тип пользователя</h2>
+    <form id="userForm">
+        <div class="form-group">
+            <label for="userType">Выберите:</label>
+            <select class="form-control" id="userType" name="userType" onchange="toggleFormFields()">
+                <option value="" selected disabled>-- Выберите --</option>
+                <option value="student">Студент</option>
+                <option value="teacher">Преподаватель</option>
+            </select>
+        </div>
+
+        <div id="studentFields" style="display: none;">
+            <div class="form-group">
+                <label for="faculty">Факультет</label>
+                <select class="form-control" id="faculty" name="faculty">
+                    <option value="" selected disabled>-- Выберите факультет --</option>
+                    <option value="ИТиЭ">Информационные технологии и инженерия</option>
+                    <option value="ЭиМ">Экономика и менеджмент</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="studyForm">Форма обучения</label>
+                <select class="form-control" id="studyForm" name="studyForm">
+                    <option value="" selected disabled>-- Выберите форму обучения --</option>
+                    <option value="fullTime">Очная</option>
+                    <option value="partTime">Заочная</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="studyLevel">Уровень обучения</label>
+                <select class="form-control" id="studyLevel" name="studyLevel">
+                    <option value="" selected disabled>-- Выберите уровень обучения --</option>
+                    <option value="bachelor">Бакалавриат</option>
+                    <option value="master">Магистратура</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="specialization">Направление</label>
+                <select class="form-control" id="specialization" name="specialization">
+                    <option value="" selected disabled>-- Выберите направление --</option>
+                    <option value="CS">Компьютерные науки</option>
+                    <option value="SE">Программная инженерия</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="groupNumber">Номер группы</label>
+                <select class="form-control" id="groupNumber" name="groupNumber">
+                    <option value="" selected disabled>-- Выберите номер группы --</option>
+                    <option value="1">Группа 1</option>
+                    <option value="2">Группа 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subgroupNumber">Номер подгруппы</label>
+                <select class="form-control" id="subgroupNumber" name="subgroupNumber">
+                    <option value="" selected disabled>-- Выберите номер подгруппы (если есть) --</option>
+                    <option value="1">Подгруппа 1</option>
+                    <option value="2">Подгруппа 2</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="teacherFields" style="display: none;">
+            <div class="form-group">
+                <label for="department">Кафедра</label>
+                <select class="form-control" id="department" name="department">
+                    <option value="" selected disabled>-- Выберите кафедру --</option>
+                    <option value="CS">Кафедра компьютерных наук</option>
+                    <option value="SE">Кафедра программной инженерии</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="teacherName">ФИО</label>
+                <select class="form-control" id="teacherName" name="teacherName">
+                    <option value="" selected disabled>-- Выберите ФИО --</option>
+                    <option value="Иванов Иван Иванович">Иванов Иван Иванович</option>
+                    <option value="Петров Петр Петрович">Петров Петр Петрович</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Отправить</button>
+    </form>
+</div>
+
+<div class="container mt-5" id="scheduleContainer" style="display: none;">
+    <h2>Расписание на <span id="selectedDay"></span></h2>
+    <button class="btn btn-secondary" onclick="changeDay(-1)">&#8249; Назад</button>
+    <button class="btn btn-secondary" onclick="changeDay(1)">Вперед &#8250;</button>
+    <div id="schedule">
+        <!-- Расписание будет сгенерировано здесь -->
+    </div>
+    <button type="button" class="btn btn-primary" onclick="backToForm()">Вернутся к форме</button>
+</div>
+
+<script>
+let currentDate = new Date();
+
+let formatDate = (date) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('ru-RU', options);
+}
+
+let toggleFormFields = () => {
+    var userType = document.getElementById("userType").value;
+    document.getElementById("studentFields").style.display = userType === "student" ? "block" : "none";
+    document.getElementById("teacherFields").style.display = userType === "teacher" ? "block" : "none";
+}
+
+let submitForm = () => {
+    const userType = document.getElementById("userType").value;
+    const selectedDay = formatDate(currentDate);
+    const userForm = document.getElementById("userForm").style.display = "none";
+    const heading = document.getElementById("heading");
+    heading.innerHTML = 'Расписание';
+
+    let data = { userType: userType, day: selectedDay };
+    
+
+    if (userType === "student") {
+        data.faculty = document.getElementById("faculty").value;
+        data.studyForm = document.getElementById("studyForm").value;
+        data.studyLevel = document.getElementById("studyLevel").value;
+        data.specialization = document.getElementById("specialization").value;
+        data.groupNumber = document.getElementById("groupNumber").value;
+        data.subgroupNumber = document.getElementById("subgroupNumber").value;
+    } else if (userType === "teacher") {
+        data.department = document.getElementById("department").value;
+        data.teacherName = document.getElementById("teacherName").value;
+    }
+
+    $.ajax({
+        url: 'get_schedule.php',
+        type: 'POST',
+        dataType: "json",
+        data: data,
+        cache: false,
+        success: function(response) {
+            const schedule = response;
+            displaySchedule(schedule, selectedDay);
+            if (schedule.message) {
+                console.log(schedule.message);
+            }
+        }
+    });
+}
+
+let backToForm = () => {
+    const userForm = document.getElementById("userForm").style.display = "block";
+    const scheduleContainer = document.getElementById("scheduleContainer").style.display = "none";
+    const heading = document.getElementById("heading");
+    heading.innerHTML = 'Выберите тип пользователя';
+}
+
+let displaySchedule = (schedule, selectedDay) => {
+    document.getElementById("selectedDay").innerText = selectedDay;
+    const scheduleContainer = document.getElementById("schedule");
+    scheduleContainer.innerHTML = '';
+
+    if (schedule.message) {
+        scheduleContainer.innerHTML = '<p>' + schedule.message + '</p>';
+        return;
+    }
+
+    schedule.forEach(item => {
+        const scheduleItem = document.createElement("div");
+        scheduleItem.classList.add('schedule-item', 'border', 'mt-2');
+        scheduleItem.innerHTML = `
+            <div class='text-center border-bottom'><strong>${item.lesson_name}</strong></div>
+            <p class='m-0 border-bottom'>Преподаватель: ${item.teacher_name}</p>
+            <p class='m-0 border-bottom'>Аудитория: ${item.classroom}</p>
+            <p class='m-0 border-bottom'>Тип занятия: ${item.lesson_type}</p>
+            <p class='m-0 border-bottom'>Длительность: ${item.lesson_duration}</p>
+        `;
+        scheduleContainer.appendChild(scheduleItem);
+    });
+
+    document.getElementById("scheduleContainer").style.display = "block";
+}
+
+let changeDay = (direction) => {
+    currentDate.setDate(currentDate.getDate() + direction);
+    submitForm();
+}
+</script>
+</body>
+</html>
