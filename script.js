@@ -34,6 +34,8 @@ let submitForm = () => {
         data.teacherName = document.getElementById("teacherName").value;
     }
 
+    console.log(data);
+
     $.ajax({
         url: 'get_schedule.php',
         type: 'POST',
@@ -41,6 +43,7 @@ let submitForm = () => {
         data: data,
         success: function(response) {
             const schedule = response;
+            console.log(schedule);
             displaySchedule(schedule, selectedDay);
             if (schedule.message) {
                 console.log(schedule.message);

@@ -35,7 +35,7 @@
                 <label for="faculty">Факультет</label>
                 <select class="form-control" id="faculty" name="faculty">
                     <option value="" selected disabled>-- Выберите факультет --</option>
-                    <option value="ИТиЭ">Информационные технологии и инженерия</option>
+                    <option value="Факультет иностранных языков">Факультет иностранных языков</option>
                     <option value="ЭиМ">Экономика и менеджмент</option>
                 </select>
             </div>
@@ -43,7 +43,7 @@
                 <label for="studyForm">Форма обучения</label>
                 <select class="form-control" id="studyForm" name="studyForm">
                     <option value="" selected disabled>-- Выберите форму обучения --</option>
-                    <option value="fullTime">Очная</option>
+                    <option value="Очная форма">Очная</option>
                     <option value="partTime">Заочная</option>
                 </select>
             </div>
@@ -51,7 +51,7 @@
                 <label for="studyLevel">Уровень обучения</label>
                 <select class="form-control" id="studyLevel" name="studyLevel">
                     <option value="" selected disabled>-- Выберите уровень обучения --</option>
-                    <option value="bachelor">Бакалавриат</option>
+                    <option value="Бакалавриат">Бакалавриат</option>
                     <option value="master">Магистратура</option>
                 </select>
             </div>
@@ -59,7 +59,7 @@
                 <label for="specialization">Направление</label>
                 <select class="form-control" id="specialization" name="specialization">
                     <option value="" selected disabled>-- Выберите направление --</option>
-                    <option value="CS">Компьютерные науки</option>
+                    <option value="Прикладная информатика">Прикладная информатика</option>
                     <option value="SE">Программная инженерия</option>
                 </select>
             </div>
@@ -81,24 +81,18 @@
             </div>
         </div>
 
-        <div id="teacherFields" style="display: none;">
-            <div class="form-group">
-                <label for="department">Кафедра</label>
-                <select class="form-control" id="department" name="department">
-                    <option value="" selected disabled>-- Выберите кафедру --</option>
-                    <option value="CS">Кафедра компьютерных наук</option>
-                    <option value="SE">Кафедра программной инженерии</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="teacherName">ФИО</label>
-                <select class="form-control" id="teacherName" name="teacherName">
-                    <option value="" selected disabled>-- Выберите ФИО --</option>
-                    <option value="Иванов Иван Иванович">Иванов Иван Иванович</option>
-                    <option value="Петров Петр Петрович">Петров Петр Петрович</option>
-                </select>
-            </div>
+        <div id="teacherFields" style="display:none;">
+            <select id="department" name="department" required>
+                <option value="Финансы и кредит">Финансы и кредит</option>
+                <option value="Маркетинг">Маркетинг</option>
+                <!-- Другие опции -->
+            </select>
+            <input type="text" id="teacherLastName" name="teacherLastName" placeholder="Фамилия" required>
+            <input type="text" id="teacherFirstName" name="teacherFirstName" placeholder="Имя" required>
+            <input type="text" id="teacherMiddleName" name="teacherMiddleName" placeholder="Отчество">
         </div>
+        
+        <input type="date" id="day" name="day" required>
 
         <button type="button" class="btn btn-primary" onclick="submitForm()">Отправить</button>
     </form>

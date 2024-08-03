@@ -1,4 +1,4 @@
-CREATE TABLE schedule (
+CREATE TABLE schedule_old (
     id INT AUTO_INCREMENT PRIMARY KEY,
     faculty VARCHAR(255) NOT NULL,
     study_form VARCHAR(255) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE schedule (
     day DATE NOT NULL
 );
 
-INSERT INTO schedule (faculty, study_form, study_level, specialization, group_number, subgroup_number, lesson_name, teacher_name, classroom, lesson_type, lesson_duration, day)
+INSERT INTO schedule_old (faculty, study_form, study_level, specialization, group_number, subgroup_number, lesson_name, teacher_name, classroom, lesson_type, lesson_duration, day)
 VALUES 
 ('ИТиЭ', 'fullTime', 'bachelor', 'CS', 1, 1, 'Программирование', 'Иванов Иван Иванович', '101', 'лекция', '1.5 часа', '2024-07-22'),
 ('ИТиЭ', 'fullTime', 'bachelor', 'CS', 1, 1, 'Алгоритмы', 'Петров Петр Петрович', '102', 'практическое', '2 часа', '2024-07-22'),
