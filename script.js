@@ -65,9 +65,11 @@ let displaySchedule = (schedule, selectedDay) => {
     scheduleContainer.innerHTML = '';
 
     if (schedule.message) {
-        scheduleContainer.innerHTML = '<p>' + schedule.message + '</p>';
+        scheduleContainer.innerHTML = '<p>' + schedule.message.value + '</p>';
         return;
     }
+
+console.log(schedule.message.value);
 
     schedule.forEach(item => {
         const scheduleItem = document.createElement("div");
@@ -77,7 +79,8 @@ let displaySchedule = (schedule, selectedDay) => {
             <p class='m-0 border-bottom'>Преподаватель: ${item.teacher_name}</p>
             <p class='m-0 border-bottom'>Аудитория: ${item.classroom}</p>
             <p class='m-0 border-bottom'>Тип занятия: ${item.lesson_type}</p>
-            <p class='m-0 border-bottom'>Длительность: ${item.lesson_duration}</p>
+            <p class='m-0 border-bottom'>Начало занятия: ${item.lesson_start}</p>
+            <p class='m-0 border-bottom'>Конец занятия: ${item.lesson_end}</p>
         `;
         scheduleContainer.appendChild(scheduleItem);
     });

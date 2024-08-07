@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `faculty`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `faculty` (
-  `id` tinyint(4) DEFAULT NULL,
+  `id` INT(4),
   `faculty_name` varchar(47) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;

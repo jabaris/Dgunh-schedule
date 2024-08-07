@@ -35,7 +35,7 @@
                 <label for="faculty">Факультет</label>
                 <select class="form-control" id="faculty" name="faculty">
                     <option value="" selected disabled>-- Выберите факультет --</option>
-                    <option value="Факультет иностранных языков">Факультет иностранных языков</option>
+                    <option value="Факультет информационных технологий и инженерии">Факультет информационных технологий и инженерии</option>
                     <option value="ЭиМ">Экономика и менеджмент</option>
                 </select>
             </div>
@@ -43,7 +43,7 @@
                 <label for="studyForm">Форма обучения</label>
                 <select class="form-control" id="studyForm" name="studyForm">
                     <option value="" selected disabled>-- Выберите форму обучения --</option>
-                    <option value="Очная форма">Очная</option>
+                    <option value="Очная">Очная</option>
                     <option value="partTime">Заочная</option>
                 </select>
             </div>
@@ -91,8 +91,6 @@
             <input type="text" id="teacherFirstName" name="teacherFirstName" placeholder="Имя" required>
             <input type="text" id="teacherMiddleName" name="teacherMiddleName" placeholder="Отчество">
         </div>
-        
-        <input type="date" id="day" name="day" required>
 
         <button type="button" class="btn btn-primary" onclick="submitForm()">Отправить</button>
     </form>
@@ -108,6 +106,96 @@
     <button type="button" class="btn btn-primary" onclick="backToForm()">Вернутся к форме</button>
 </div>
 
-<script src="./script.js"></script>
+<script>
+    let currentDate = new Date();
+
+let formatDate = (date) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('ru-RU', options);
+}
+
+
+let toggleFormFields = () => {
+    var userType = document.getElementById("userType").value;
+    document.getElementById("studentFields").style.display = userType === "student" ? "block" : "none";
+    document.getElementById("teacherFields").style.display = userType === "teacher" ? "block" : "none";
+}
+
+let submitForm = () => {
+    const userType = document.getElementById("userType").value;
+    const selectedDay = formatDate(currentDate);
+    const userForm = document.getElementById("userForm").style.display = "none";
+    const heading = document.getElementById("heading");
+    heading.innerHTML = 'Расписание';
+    document.getElementById("scheduleContainer").style.display = "block";
+
+    let data = { userType: userType, day: selectedDay };
+    
+
+    if (userType === "student") {
+        data.faculty = document.getElementById("faculty").value;
+        data.studyForm = document.getElementById("studyForm").value;
+        data.studyLevel = document.getElementById("studyLevel").value;
+        data.specialization = document.getElementById("specialization").value;
+        data.groupNumber = document.getElementById("groupNumber").value;
+        data.subgroupNumber = document.getElementById("subgroupNumber").value;
+    } else if (userType === "teacher") {
+        data.department = document.getElementById("department").value;
+        data.teacherName = document.getElementById("teacherName").value;
+    }
+
+    console.log(data);
+
+    $.ajax({
+        url: 'get_schedule.php',
+        type: 'POST',
+        dataType: "json",
+        data: data,
+        success: function(response) {
+            const schedule = response;
+            console.log(schedule);
+            displaySchedule(schedule, selectedDay);
+            if (schedule.message) {
+                console.log(schedule.message);
+            }
+        }
+    });
+}
+
+let backToForm = () => {
+    const userForm = document.getElementById("userForm").style.display = "block";
+    const scheduleContainer = document.getElementById("scheduleContainer").style.display = "none";
+    const heading = document.getElementById("heading");
+    heading.innerHTML = 'Выберите тип пользователя';
+}
+
+let displaySchedule = (schedule, selectedDay) => {
+    document.getElementById("selectedDay").innerText = selectedDay;
+    const scheduleContainer = document.getElementById("schedule");
+
+    if (schedule.message) {
+        scheduleContainer.innerHTML = '<p>' + schedule.message + '</p>';
+    }
+
+    schedule.forEach(item => {
+        const scheduleItem = document.createElement("div");
+        scheduleItem.classList.add('schedule-item', 'border', 'mt-2');
+        scheduleItem.innerHTML = `
+            <div class='text-center border-bottom'><strong>${item.lesson_title}</strong></div>
+            <p class='m-0 p-2 border-bottom'>Преподаватель: ${item.teacher_name}</p>
+            <p class='m-0 p-2 border-bottom'>Аудитория: ${item.class_room}</p>
+            <p class='m-0 p-2 border-bottom'>Тип занятия: ${item.lesson_type_name}</p>
+            <p class='m-0 p-2 border-bottom'>Начало занятия: ${item.time_start}</p>
+            <p class='m-0 p-2'>Конец занятия: ${item.time_end}</p>
+        `;
+        scheduleContainer.appendChild(scheduleItem);
+    });
+}
+
+let changeDay = (direction) => {
+    currentDate.setDate(currentDate.getDate() + direction);
+    submitForm();
+}
+</script>
 </body>
 </html>

@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `department`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `department` (
-  `7` tinyint(4) DEFAULT NULL,
+  `7` int(4) DEFAULT NULL,
   `unknownColumn` varchar(0) DEFAULT NULL,
   `Кафедра гуманитарных дисциплин` varchar(60) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
