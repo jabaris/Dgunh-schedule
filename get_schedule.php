@@ -22,6 +22,7 @@ if ($userType == "student") {
     $specialization = $_POST['specialization'];
     $groupNumber = $_POST['groupNumber'];
     $subgroupNumber = $_POST['subgroupNumber'];
+    $weekday = $_POST['weekday'];
 
     
     // $sql = "SELECT lesson_name, teacher_name, classroom, lesson_type, lesson_duration FROM schedule_old 
@@ -44,7 +45,7 @@ if ($userType == "student") {
     // WHERE f.faculty_name = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.education_profile_name = ? 
     // AND eg.num = ? AND (eg.subnum = ? OR eg.subnum IS NULL)";
 
-    $sql = "SELECT s.lesson_title, CONCAT(t.last_name, ' ', t.first_name, ' ', t.second_name) as teacher_name, CONCAT(c.floor, '-', c.num) as class_room, lt.lesson_type_name, sr.time_start, sr.time_end
+    $sql = "SELECT s.lesson_title, CONCAT(t.last_name, ' ', t.first_name, ' ', t.second_name) as teacher_name, CONCAT(c.floor, '-', c.num) as class_room, lt.lesson_type_name, sr.time_start, sr.time_end, s.lesson_num
     FROM schedule AS s
     INNER JOIN education_group AS eg ON s.education_group_id = eg.id
     INNER JOIN education_program AS ep ON eg.education_program_id = ep.id
@@ -55,9 +56,10 @@ if ($userType == "student") {
     INNER JOIN classroom AS c ON s.class_room_id = c.id
     INNER JOIN schedule_ring AS sr ON sr.education_form_id = ef.id AND sr.lesson_num = s.lesson_num
     INNER JOIN lesson_type AS lt ON s.lesson_type = lt.id
+    INNER JOIN schedule_week AS sw
     INNER JOIN faculty AS f ON epr.faculty_id = f.id
     WHERE f.faculty_name = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.education_profile_name = ? 
-    AND eg.num = ? AND (eg.subnum = ? OR eg.subnum IS NULL)";
+    AND eg.num = ? AND (eg.subnum = ? OR eg.subnum IS NULL) AND s.weekday = ? ORDER BY s.lesson_num";
     
     
     $stmt = $conn->prepare($sql);
@@ -65,7 +67,7 @@ if ($userType == "student") {
         error_log("Execute failed: " . $stmt->error);
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("ssssii", $faculty, $studyForm, $studyLevel, $specialization, $groupNumber, $subgroupNumber);
+    $stmt->bind_param("ssssiii", $faculty, $studyForm, $studyLevel, $specialization, $groupNumber, $subgroupNumber,$weekday);
 
     
 } else if ($userType == "teacher") {
