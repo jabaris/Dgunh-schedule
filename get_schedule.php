@@ -15,9 +15,14 @@ if ($conn->connect_error) {
 $userType = $_POST['userType'];
 
 // Определяем текущий день недели (1 - понедельник, ..., 7 - воскресенье)
-$currentWeekday = date('N'); // N возвращает день недели, начиная с 1 для понедельника до 7 для воскресенья.
+// $currentWeekday = date('N') - 3; // N возвращает день недели, начиная с 1 для понедельника до 7 для воскресенья.
 
-error_log($currentWeekday);
+
+// Получаем параметры из POST-запроса
+$userType = $_POST['userType'];
+$requestedDate = new DateTime($_POST['date']);  // Переданная дата
+$currentWeekday = $_POST['weekday']; 
+
 // Получаем начало и конец семестра из базы данных
 $sql_semester = "SELECT date_start, date_end FROM schedule LIMIT 1"; // предположим, что даты одинаковы для всех записей
 $result_semester = $conn->query($sql_semester);
@@ -43,6 +48,7 @@ if ($userType == "student") {
     $studyForm = $_POST['studyForm'];
     $studyLevel = $_POST['studyLevel'];
     $specialization = $_POST['specialization'];
+    $profile = $_POST['profile'];
     $groupNumber = $_POST['groupNumber'];
     $subgroupNumber = $_POST['subgroupNumber'];
 
@@ -59,7 +65,7 @@ if ($userType == "student") {
             INNER JOIN schedule_ring AS sr ON sr.education_form_id = ef.id AND sr.lesson_num = s.lesson_num
             INNER JOIN lesson_type AS lt ON s.lesson_type = lt.id
             INNER JOIN faculty AS f ON epr.faculty_id = f.id
-            WHERE f.faculty_name = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.education_profile_name = ? 
+            WHERE f.faculty_name = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.education_profile_name = ? AND ep.education_program_name = ?
             AND eg.num = ? AND (eg.subnum = ? OR eg.subnum IS NULL) AND s.weekday = ? AND s.week = ?
             ORDER BY s.lesson_num";
     
@@ -68,7 +74,7 @@ if ($userType == "student") {
         error_log("Prepare failed: " . $conn->error);
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("ssssiiii", $faculty, $studyForm, $studyLevel, $specialization, $groupNumber, $subgroupNumber, $currentWeekday, $weekType);
+    $stmt->bind_param("sssssiiii", $faculty, $studyForm, $studyLevel, $specialization, $profile, $groupNumber, $subgroupNumber, $currentWeekday, $weekType);
 
 } else if ($userType == "teacher") {
     $department = $_POST['department'];
@@ -110,6 +116,6 @@ $conn->close();
 if (count($schedule)) {
     echo json_encode($schedule);
 } else {
-    echo json_encode(array("message" => "Таких данных нет в базе данных."));
+    echo json_encode(array("message" => "Не удалось найти расписание."));
 }
 ?>
