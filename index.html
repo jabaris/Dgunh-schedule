@@ -114,7 +114,6 @@
     <div id="schedule">
         <!-- Расписание будет сгенерировано здесь -->
     </div>
-    <button type="button" class="btn btn-primary" onclick="backToForm()">Вернутся к форме</button>
 </div>
 
 <script>
@@ -172,13 +171,6 @@ let submitForm = () => {
             }
         }
     });
-}
-
-let backToForm = () => {
-    const userForm = document.getElementById("userForm").style.display = "block";
-    const scheduleContainer = document.getElementById("scheduleContainer").style.display = "none";
-    const heading = document.getElementById("heading");
-    heading.innerHTML = 'Выберите тип пользователя';
 }
 
 let displaySchedule = (schedule, selectedDay) => {
