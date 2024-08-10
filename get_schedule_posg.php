@@ -23,11 +23,17 @@ if ($user_type == 'student') {
     $subgroupNumber = $_POST['subgroupNumber'];
 
     $query = "SELECT * FROM schedule WHERE faculty = '$faculty' AND study_form = '$studyForm' AND study_level = '$studyLevel' AND specialization = '$specialization' AND group_number = '$groupNumber' AND subgroup_number = '$subgroupNumber' AND day = '$selected_day'";
-} else if ($user_type == 'teacher') {
+}  else if ($userType == "teacher") {
     $department = $_POST['department'];
     $teacherName = $_POST['teacherName'];
 
-    $query = "SELECT * FROM schedule WHERE department = '$department' AND teacher_name = '$teacherName' AND day = '$selected_day'";
+    $sql = "SELECT lesson_name, teacher_name, classroom, lesson_type, lesson_duration FROM schedule_old 
+            WHERE department = ? AND teacher_name = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+    $stmt->bind_param("ss", $department, $teacherName);
 }
 
 $result = pg_query($conn, $query);

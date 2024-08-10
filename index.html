@@ -79,7 +79,7 @@
                     <option value="2">Подгруппа 2</option>
                 </select>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="weekday">Номер подгруппы</label>
                 <select class="form-control" id="weekday" name="weekday">
                     <option value="" selected disabled>-- Выберите день недели --</option>
@@ -89,7 +89,7 @@
                     <option value="4">Четверг</option>
                     <option value="5">Пятница</option>
                 </select>
-            </div>
+            </div> -->
         </div>
 
         <div id="teacherFields" style="display:none;">
@@ -149,7 +149,6 @@ let submitForm = () => {
         data.specialization = document.getElementById("specialization").value;
         data.groupNumber = document.getElementById("groupNumber").value;
         data.subgroupNumber = document.getElementById("subgroupNumber").value;
-        data.weekday = document.getElementById("weekday").value;
     } else if (userType === "teacher") {
         data.department = document.getElementById("department").value;
         data.teacherName = document.getElementById("teacherName").value;
