@@ -51,20 +51,20 @@ if ($userType == "student") {
     $groupNumber = $_POST['groupNumber'];
     $subgroupNumber = $_POST['subgroupNumber'];
 
-    $sql = "SELECT s.lesson_title, CONCAT(t.last_name, ' ', t.first_name, ' ', t.second_name) as teacher_name, 
+    $sql = "SELECT s.lesson_title, CONCAT(t.second_name, ' ', t.first_name, ' ', t.last_name) as teacher_name, 
             CONCAT(c.floor, '-', c.num) as class_room, lt.lesson_type_name, sr.time_start, sr.time_end, s.lesson_num
             FROM schedule AS s
             INNER JOIN education_group AS eg ON s.education_group_id = eg.id
             INNER JOIN education_program AS ep ON eg.education_program_id = ep.id
             INNER JOIN education_level AS el ON ep.education_level_id = el.id
             INNER JOIN education_form AS ef ON ep.education_form_id = ef.id
+            INNER JOIN schedule_week AS sw ON ef.id = sw.education_form_id
             INNER JOIN education_profile AS epr ON ep.education_profile_id = epr.id
             INNER JOIN teacher AS t ON s.teacher_id = t.id
             INNER JOIN classroom AS c ON s.class_room_id = c.id
             INNER JOIN schedule_ring AS sr ON sr.education_form_id = ef.id AND sr.lesson_num = s.lesson_num
             INNER JOIN lesson_type AS lt ON s.lesson_type = lt.id
             INNER JOIN faculty AS f ON epr.faculty_id = f.id
-            INNER JOIN schedule_week AS sw ON sw.education_form_id = ef.id 
             WHERE f.faculty_name = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.education_profile_name = ? AND ep.education_program_name = ?
             AND eg.num = ? AND (eg.subnum = ? OR eg.subnum IS NULL) AND s.weekday = ? AND s.week = ?
             ORDER BY s.lesson_num";
