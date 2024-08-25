@@ -7,12 +7,73 @@ let formatDate = (date) => {
     return date.toLocaleDateString('ru-RU', options);
 }
 
+// Загрузка кафедр из базы данных
+let loadDepartments = () => {
+    $.ajax({
+        url: 'get_departments.php', // URL к вашему PHP скрипту
+        type: 'GET',
+        dataType: "json",
+        success: function(response) {
+            const departmentSelect = document.getElementById("department");
+            console.log(response);
+            // Очищаем селект перед добавлением новых данных
+            departmentSelect.innerHTML = '';
+
+            response.forEach(department => {
+                let option = document.createElement("option");
+                option.value = department.id;
+                option.text = department.department_name;
+                departmentSelect.appendChild(option);
+            });
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading departments:", error);
+        }
+    });
+}
+// Функция для загрузки списка преподавателей на основе выбранной кафедры
+let loadTeachers = (departmentId) => {
+    $.ajax({
+        url: 'get_teachers.php',
+        type: 'GET',
+        dataType: "json",
+        data: { department_id: departmentId },
+        success: function(response) {
+            const teacherSelect = document.getElementById("teacherName");
+
+            // Очищаем селект перед добавлением новых данных
+            teacherSelect.innerHTML = '';
+
+            response.forEach(teacher => {
+                let option = document.createElement("option");
+                option.value = teacher.id;
+                option.text = teacher.teacher_name;
+                teacherSelect.appendChild(option);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading teachers:", error);
+        }
+    });
+}
+
 // Переключение полей формы в зависимости от типа пользователя
 let toggleFormFields = () => {
     var userType = document.getElementById("userType").value;
     document.getElementById("studentFields").style.display = userType === "student" ? "block" : "none";
     document.getElementById("teacherFields").style.display = userType === "teacher" ? "block" : "none";
+
+    if (userType === "teacher") {
+        loadDepartments(); // Загружаем список кафедр при выборе "Преподаватель"
+    }
 }
+// Функция для обработки изменения кафедры
+let onDepartmentChange = () => {
+    const departmentId = document.getElementById("department").value;
+    loadTeachers(departmentId); // Загружаем преподавателей для выбранной кафедры
+}
+
 
 // Отправка формы и запрос на сервер для получения расписания
 let submitForm = () => {

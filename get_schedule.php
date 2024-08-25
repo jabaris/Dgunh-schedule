@@ -40,8 +40,6 @@ $currentWeek = ceil($weekDifference);
 // Определяем, какая сейчас неделя (1 или 2)
 $weekType = $currentWeek % 2 == 0 ? 2 : 1;
 
-error_log($weekType);
-
 if ($userType == "student") {
     $faculty = $_POST['faculty'];
     $studyForm = $_POST['studyForm'];
@@ -71,7 +69,6 @@ if ($userType == "student") {
     
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
-        error_log("Prepare failed: " . $conn->error);
         die("Prepare failed: " . $conn->error);
     }
     $stmt->bind_param("sssssiiii", $faculty, $studyForm, $studyLevel, $specialization, $profile, $groupNumber, $subgroupNumber, $currentWeekday, $weekType);
@@ -80,18 +77,19 @@ if ($userType == "student") {
     $department = $_POST['department'];
     $teacherName = $_POST['teacherName'];
 
-    $sql = "SELECT s.lesson_title, CONCAT(t.last_name, ' ', t.first_name, ' ', t.second_name) as teacher_name, 
+    $sql = "SELECT s.lesson_title, 
             CONCAT(c.floor, '-', c.num) as class_room, lt.lesson_type_name, sr.time_start, sr.time_end, s.lesson_num
             FROM schedule AS s
             INNER JOIN teacher AS t ON s.teacher_id = t.id
             INNER JOIN department AS d ON t.department_id = d.id
             INNER JOIN classroom AS c ON s.class_room_id = c.id
             INNER JOIN lesson_type AS lt ON s.lesson_type = lt.id
-            INNER JOIN schedule_ring AS sr ON sr.education_form_id = s.education_form_id AND sr.lesson_num = s.lesson_num
+            INNER JOIN schedule_ring AS sr ON sr.lesson_num = s.lesson_num
             WHERE d.department_name = ? AND CONCAT(t.last_name, ' ', t.first_name, ' ', t.second_name) = ? AND s.weekday = ? AND s.week = ?
             ORDER BY s.lesson_num";
     
     $stmt = $conn->prepare($sql);
+    error_log($sql);
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
