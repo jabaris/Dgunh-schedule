@@ -85,15 +85,15 @@ if ($userType == "student") {
             INNER JOIN classroom AS c ON s.class_room_id = c.id
             INNER JOIN lesson_type AS lt ON s.lesson_type = lt.id
             INNER JOIN schedule_ring AS sr ON sr.lesson_num = s.lesson_num
-            WHERE d.department_name = ? AND CONCAT(t.last_name, ' ', t.first_name, ' ', t.second_name) = ? AND s.weekday = ? AND s.week = ?
+            WHERE d.id = ? AND t.id = ? AND s.weekday = ? AND s.week = ?
             ORDER BY s.lesson_num";
     
     $stmt = $conn->prepare($sql);
-    error_log($sql);
+
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("ssii", $department, $teacherName, $currentWeekday, $weekType);
+    $stmt->bind_param("iiii", $department, $teacherName, $currentWeekday, $weekType);
 }
 
 if (!$stmt->execute()) {
@@ -109,7 +109,6 @@ while ($row = $result->fetch_assoc()) {
 
 $stmt->close();
 $conn->close();
-
 // Если данных нет, возвращаем сообщение
 if (count($schedule)) {
     echo json_encode($schedule);
