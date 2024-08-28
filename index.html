@@ -132,7 +132,6 @@ let formatDate = (date) => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('ru-RU', options);
 }
-
 // Загрузка кафедр из базы данных
 let loadDepartments = () => {
     $.ajax({
@@ -164,6 +163,9 @@ let loadTeachers = (departmentId) => {
         data: { department_id: departmentId },
         success: function(response) {
             const teacherSelect = document.getElementById("teacherName");
+
+            // Очищаем текущие опции в селекте преподавателей
+            teacherSelect.innerHTML = '';
 
             if (response.error) {
                 console.error("Error loading teachers:", response.error);
