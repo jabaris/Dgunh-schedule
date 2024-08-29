@@ -116,8 +116,8 @@
 
 <div class="container mt-5" id="scheduleContainer" style="display: none;">
     <h2>Расписание на <span id="selectedDay"></span></h2>
-    <button class="btn btn-secondary" onclick="changeDay(-1)">&#8249; Назад</button>
-    <button class="btn btn-secondary" onclick="changeDay(1)">Вперед &#8250;</button>
+    <button class="btn btn-primary" onclick="changeDay(-1)">&#8249; Назад</button>
+    <button class="btn btn-primary" onclick="changeDay(1)">Вперед &#8250;</button>
     <div id="schedule">
         <!-- Расписание будет сгенерировано здесь -->
     </div>
@@ -240,7 +240,11 @@ let submitForm = () => {
         data: data,
         success: function(response) {
             const schedule = response;
-            displaySchedule(schedule, selectedDay);
+            if (userType === "student") {
+                displaySchedule(schedule, selectedDay);
+            } else if (userType === "teacher") {
+                displayScheduleForTeacher(schedule, selectedDay);
+            }
             if (schedule.message) {
                 console.log(schedule.message);
             }
@@ -274,6 +278,35 @@ let displaySchedule = (schedule, selectedDay) => {
                 <strong>${item.lesson_title}</strong>
             </div>
             <p class='m-0 p-2 border-bottom'>Преподаватель: ${item.teacher_name}</p>
+            <p class='m-0 p-2 border-bottom'>Аудитория: ${item.class_room}</p>
+            <p class='m-0 p-2 border-bottom'>Тип занятия: ${item.lesson_type_name}</p>
+            <p class='m-0 p-2 border-bottom'>Начало занятия: ${item.time_start}</p>
+            <p class='m-0 p-2'>Конец занятия: ${item.time_end}</p>
+        `;
+        scheduleContainer.appendChild(scheduleItem);
+    });
+}
+
+let displayScheduleForTeacher = (schedule, selectedDay) => {
+    document.getElementById("selectedDay").innerText = selectedDay;
+    const scheduleContainer = document.getElementById("schedule");
+
+    // Очищаем предыдущие результаты
+    scheduleContainer.innerHTML = '';
+
+    if (schedule.message) {
+        scheduleContainer.innerHTML = '<p>' + schedule.message + '</p>';
+        return;
+    }
+
+    schedule.forEach(item => {
+        const scheduleItem = document.createElement("div");
+        scheduleItem.classList.add('schedule-item', 'border', 'mt-2');
+        scheduleItem.innerHTML = `
+            <div class='text-center border-bottom'>
+                <strong>${item.teacher_name}</strong>
+            </div>
+            <p class='m-0 p-2 border-bottom'>Занятие: ${item.lesson_title}</p>
             <p class='m-0 p-2 border-bottom'>Аудитория: ${item.class_room}</p>
             <p class='m-0 p-2 border-bottom'>Тип занятия: ${item.lesson_type_name}</p>
             <p class='m-0 p-2 border-bottom'>Начало занятия: ${item.time_start}</p>

@@ -77,7 +77,7 @@ if ($userType == "student") {
     $department = $_POST['department'];
     $teacherName = $_POST['teacherName'];
 
-    $sql = "SELECT s.lesson_title, 
+    $sql = "SELECT s.lesson_title, CONCAT(t.second_name, ' ', t.first_name, ' ', t.last_name) as teacher_name,
             CONCAT(c.floor, '-', c.num) as class_room, lt.lesson_type_name, sr.time_start, sr.time_end, s.lesson_num
             FROM schedule AS s
             INNER JOIN teacher AS t ON s.teacher_id = t.id
