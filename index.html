@@ -8,14 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-        .schedule-day {
-            margin-bottom: 20px;
-        }
-        .schedule-item {
-            margin-bottom: 10px;
-        }
-    </style>
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
@@ -33,14 +26,9 @@
         <div id="studentFields" style="display: none;">
             <div class="form-group">
                 <label for="faculty">Факультет</label>
-                <select class="form-control" id="faculty" name="faculty">
+                <select class="form-control" id="faculty" name="faculty" onchange="onFacultyChange()">
                     <option value="" selected disabled>-- Выберите факультет --</option>
-                    <option value="Факультет информационных технологий и инженерии">Факультет информационных технологий и инженерии</option>
-                    <option value="Факультет иностранных языков">Факультет иностранных языков</option>
-                    <option value="Факультет дополнительного образования">Факультет дополнительного образования</option>
-                    <option value="Факультет экономики и управления">Факультет экономики и управления</option>
-                    <option value="Юридический факультет">Юридический факультет</option>
-                    <option value="Колледж">Колледж</option>
+
                 </select>
             </div>
             <div class="form-group">
@@ -48,9 +36,7 @@
                 <select class="form-control" id="studyForm" name="studyForm">
                     <option value="" selected disabled>-- Выберите форму обучения --</option>
                     <option value="Очная">Очная</option>
-                    <option value="Заочная">Заочная</option>
                     <option value="Очно-заочная">Очно-заочная</option>
-                    <option value="Дистанционная">Дистанционная</option>
                 </select>
             </div>
             <div class="form-group">
@@ -67,7 +53,6 @@
                 <label for="specialization">Направление</label>
                 <select class="form-control" id="specialization" name="specialization">
                     <option value="" selected disabled>-- Выберите направление --</option>
-                    <option value="Прикладная информатика">Прикладная информатика</option>
                 </select>
             </div>
             <div class="form-group">
@@ -104,7 +89,7 @@
                 <label for="teacherName">ФИО преподавателя:</label>
                 <select class="form-control" id="teacherName" name="teacherName">
                     <option value="" selected disabled>-- Выберите преподавателя --</option>
-                    <!-- Добавьте других преподавателей здесь -->
+
                 </select>
                 <br>
             </div>
@@ -123,204 +108,8 @@
     </div>
 </div>
 
-<script>
-    // Текущая дата
-let currentDate = new Date();
-
-// Форматирование даты
-let formatDate = (date) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('ru-RU', options);
-}
-// Загрузка кафедр из базы данных
-let loadDepartments = () => {
-    $.ajax({
-        url: 'get_departments.php', // URL к вашему PHP скрипту
-        type: 'GET',
-        dataType: "json",
-        success: function(response) {
-            const departmentSelect = document.getElementById("department");
-
-            response.forEach(department => {
-                let option = document.createElement("option");
-                option.value = department.id;
-                option.text = department.department_name;
-                departmentSelect.appendChild(option);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("Error loading departments:", error);
-        }
-    });
-}
-
-// Функция для загрузки списка преподавателей на основе выбранной кафедры
-let loadTeachers = (departmentId) => {
-    $.ajax({
-        url: 'get_teachers.php',
-        type: 'GET',
-        dataType: "json",
-        data: { department_id: departmentId },
-        success: function(response) {
-            const teacherSelect = document.getElementById("teacherName");
-
-            // Очищаем текущие опции в селекте преподавателей
-            teacherSelect.innerHTML = '';
-
-            if (response.error) {
-                console.error("Error loading teachers:", response.error);
-                return;
-            }
-
-            response.forEach(teacher => {
-                let option = document.createElement("option");
-                option.value = teacher.id;
-                option.text = teacher.teacher_name;
-                teacherSelect.appendChild(option);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("Error loading teachers:", error);
-        }
-    });
-}
-
-// Переключение полей формы в зависимости от типа пользователя
-let toggleFormFields = () => {
-    var userType = document.getElementById("userType").value;
-    document.getElementById("studentFields").style.display = userType === "student" ? "block" : "none";
-    document.getElementById("teacherFields").style.display = userType === "teacher" ? "block" : "none";
-
-    if (userType === "teacher") {
-        loadDepartments(); // Загружаем список кафедр при выборе "Преподаватель"
-    }
-}
-
-// Функция для обработки изменения кафедры
-let onDepartmentChange = () => {
-    const departmentId = document.getElementById("department").value;
-    loadTeachers(departmentId); // Загружаем преподавателей для выбранной кафедры
-}
-
-
-// Отправка формы и запрос на сервер для получения расписания
-let submitForm = () => {
-    const userType = document.getElementById("userType").value;
-    const selectedDay = formatDate(currentDate);
-    document.getElementById("userForm").style.display = "none";
-    const heading = document.getElementById("heading");
-    heading.innerHTML = 'Расписание';
-    document.getElementById("scheduleContainer").style.display = "block";
-
-    let data = { 
-        userType: userType, 
-        date: currentDate.toISOString().split('T')[0], 
-        weekday: currentDate.getDay()  // Добавляем день недели для запроса
-    };
-    
-    if (userType === "student") {
-        data.faculty = document.getElementById("faculty").value;
-        data.studyForm = document.getElementById("studyForm").value;
-        data.studyLevel = document.getElementById("studyLevel").value;
-        data.specialization = document.getElementById("specialization").value;
-        data.profile = document.getElementById("profile").value;
-        data.groupNumber = document.getElementById("groupNumber").value;
-        data.subgroupNumber = document.getElementById("subgroupNumber").value;
-    } else if (userType === "teacher") {
-        data.department = document.getElementById("department").value;
-        data.teacherName = document.getElementById("teacherName").value;
-    }
-
-    console.log(data);
-
-    $.ajax({
-        url: 'get_schedule.php',
-        type: 'POST',
-        dataType: "json",
-        data: data,
-        success: function(response) {
-            const schedule = response;
-            if (userType === "student") {
-                displaySchedule(schedule, selectedDay);
-            } else if (userType === "teacher") {
-                displayScheduleForTeacher(schedule, selectedDay);
-            }
-            if (schedule.message) {
-                console.log(schedule.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error loading schedule:", error);
-            document.getElementById("schedule").innerHTML = "<p>Произошла ошибка при загрузке расписания.</p>";
-        }
-    });
-}
-
-// Отображение расписания на странице
-let displaySchedule = (schedule, selectedDay) => {
-    document.getElementById("selectedDay").innerText = selectedDay;
-    const scheduleContainer = document.getElementById("schedule");
-
-    // Очищаем предыдущие результаты
-    scheduleContainer.innerHTML = '';
-
-    if (schedule.message) {
-        scheduleContainer.innerHTML = '<p>' + schedule.message + '</p>';
-        return;
-    }
-
-    schedule.forEach(item => {
-        const scheduleItem = document.createElement("div");
-        scheduleItem.classList.add('schedule-item', 'border', 'mt-2');
-        scheduleItem.innerHTML = `
-            <div class='text-center border-bottom'>
-                <span>${item.lesson_num}</span>
-                <strong>${item.lesson_title}</strong>
-            </div>
-            <p class='m-0 p-2 border-bottom'>Преподаватель: ${item.teacher_name}</p>
-            <p class='m-0 p-2 border-bottom'>Аудитория: ${item.class_room}</p>
-            <p class='m-0 p-2 border-bottom'>Тип занятия: ${item.lesson_type_name}</p>
-            <p class='m-0 p-2 border-bottom'>Начало занятия: ${item.time_start}</p>
-            <p class='m-0 p-2'>Конец занятия: ${item.time_end}</p>
-        `;
-        scheduleContainer.appendChild(scheduleItem);
-    });
-}
-
-let displayScheduleForTeacher = (schedule, selectedDay) => {
-    document.getElementById("selectedDay").innerText = selectedDay;
-    const scheduleContainer = document.getElementById("schedule");
-
-    // Очищаем предыдущие результаты
-    scheduleContainer.innerHTML = '';
-
-    if (schedule.message) {
-        scheduleContainer.innerHTML = '<p>' + schedule.message + '</p>';
-        return;
-    }
-
-    schedule.forEach(item => {
-        const scheduleItem = document.createElement("div");
-        scheduleItem.classList.add('schedule-item', 'border', 'mt-2');
-        scheduleItem.innerHTML = `
-            <div class='text-center border-bottom'>
-                <strong>${item.teacher_name}</strong>
-            </div>
-            <p class='m-0 p-2 border-bottom'>Занятие: ${item.lesson_title}</p>
-            <p class='m-0 p-2 border-bottom'>Аудитория: ${item.class_room}</p>
-            <p class='m-0 p-2 border-bottom'>Тип занятия: ${item.lesson_type_name}</p>
-            <p class='m-0 p-2 border-bottom'>Начало занятия: ${item.time_start}</p>
-            <p class='m-0 p-2'>Конец занятия: ${item.time_end}</p>
-        `;
-        scheduleContainer.appendChild(scheduleItem);
-    });
-}
-
-// Изменение дня при нажатии кнопок "вперед" и "назад"
-let changeDay = (direction) => {
-    currentDate.setDate(currentDate.getDate() + direction);  // Изменяем текущую дату
-    submitForm();  // Отправляем обновленные данные на сервер
-}
-</script>
+<script src="js/ajax.js"></script>
+<script src="js/schedule.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
