@@ -33,6 +33,12 @@ let onFacultyChange = () => {
     loadProfile(facultyId); // Загружаем  профили для выбранного факультета
 }
 
+let onProgramChange = () => {
+    const educationLevelId = document.getElementById("studyLevel").value;
+    const educationFormId = document.getElementById("studyForm").value;
+    loadProgram(educationFormId, educationLevelIds);
+}
+
 // Отправка формы и запрос на сервер для получения расписания
 let submitForm = () => {
     const userType = document.getElementById("userType").value;
@@ -54,6 +60,7 @@ let submitForm = () => {
         data.studyLevel = document.getElementById("studyLevel").value;
         data.specialization = document.getElementById("specialization").value;
         data.profile = document.getElementById("profile").value;
+        data.course = document.getElementById("course").value;
         data.groupNumber = document.getElementById("groupNumber").value;
         data.subgroupNumber = document.getElementById("subgroupNumber").value;
     } else if (userType === "teacher") {

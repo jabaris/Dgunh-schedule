@@ -103,3 +103,37 @@ let loadProfile = (facultyId) => {
         }
     });
 }
+
+// Функция для загрузки списка профиля обучения на основе выбранных форм и уровня обучения
+let loadProgram = (educationFormId,educationLevelId) => {
+    $.ajax({
+        url: 'php/get_program.php',
+        type: 'GET',
+        dataType: "json",
+        data: {
+            education_form_id: educationFormId,
+            education_level_id: educationLevelId
+         },
+        success: function(response) {
+            const programSelect = document.getElementById("profile");
+
+            // Очищаем текущие опции в селекте преподавателей
+            programSelect.innerHTML = '';
+
+            if (response.error) {
+                console.error("Error loading teachers:", response.error);
+                return;
+            }
+
+            response.forEach(program => {
+                let option = document.createElement("option");
+                option.value = program.id;
+                option.text = program.education_program_name;
+                programSelect.appendChild(option);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading teachers:", error);
+        }
+    });
+}

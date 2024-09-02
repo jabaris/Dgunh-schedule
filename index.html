@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
@@ -41,7 +41,7 @@
             </div>
             <div class="form-group">
                 <label for="studyLevel">Уровень обучения</label>
-                <select class="form-control" id="studyLevel" name="studyLevel">
+                <select class="form-control" id="studyLevel" name="studyLevel" onchange="onProgramChange()">
                     <option value="" selected disabled>-- Выберите уровень обучения --</option>
                     <option value="Бакалавриат">Бакалавриат</option>
                     <option value="Магистратура">Магистратура</option>
@@ -56,10 +56,20 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="profile">Пррофиль</label>
+                <label for="profile">Профиль</label>
                 <select class="form-control" id="profile" name="profile">
                     <option value="" selected disabled>-- Выберите профиль --</option>
-                    <option value="Информационные системы в экономике">Информационные системы в экономике</option>
+                    <!-- <option value="Информационные системы в экономике">Информационные системы в экономике</option> -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="course">Курс</label>
+                <select class="form-control" id="course" name="course">
+                    <option value="" selected disabled>-- Выберите курс --</option>
+                    <option value="1">1 курс</option>
+                    <option value="2">2 курс</option>
+                    <option value="3">3 курс</option>
+                    <option value="4">4 курс</option>
                 </select>
             </div>
             <div class="form-group">
