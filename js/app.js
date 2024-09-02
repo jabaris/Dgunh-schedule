@@ -33,11 +33,11 @@ let onFacultyChange = () => {
     loadProfile(facultyId); // Загружаем  профили для выбранного факультета
 }
 
-let onProgramChange = () => {
-    const educationLevelId = document.getElementById("studyLevel").value;
-    const educationFormId = document.getElementById("studyForm").value;
-    loadProgram(educationFormId, educationLevelIds);
-}
+// let onProgramChange = () => {
+//     const educationLevelId = document.getElementById("studyLevel").value;
+//     const educationFormId = document.getElementById("studyForm").value;
+//     loadProgram(educationFormId, educationLevelId);
+// }
 
 // Отправка формы и запрос на сервер для получения расписания
 let submitForm = () => {

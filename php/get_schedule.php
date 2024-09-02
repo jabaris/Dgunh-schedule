@@ -64,7 +64,7 @@ if ($userType == "student") {
             INNER JOIN schedule_ring AS sr ON sr.education_form_id = ef.id AND sr.lesson_num = s.lesson_num
             INNER JOIN lesson_type AS lt ON s.lesson_type = lt.id
             INNER JOIN faculty AS f ON epr.faculty_id = f.id
-            WHERE f.id = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.id = ? AND ep.id = ? AND eg.course = ?
+            WHERE f.id = ? AND ef.education_form_name = ? AND el.education_level_name = ? AND epr.id = ? AND ep.education_program_name = ? AND eg.course = ?
             AND eg.num = ? AND (eg.subnum = ? OR eg.subnum IS NULL) AND s.weekday = ? AND s.week = ?
             ORDER BY s.lesson_num";
     
@@ -72,7 +72,7 @@ if ($userType == "student") {
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("issiiiiiii", $faculty, $studyForm, $studyLevel, $specialization, $profile, $course, $groupNumber, $subgroupNumber, $currentWeekday, $weekType);
+    $stmt->bind_param("issisiiiii", $faculty, $studyForm, $studyLevel, $specialization, $profile, $course, $groupNumber, $subgroupNumber, $currentWeekday, $weekType);
 
 } else if ($userType == "teacher") {
     $department = $_POST['department'];
